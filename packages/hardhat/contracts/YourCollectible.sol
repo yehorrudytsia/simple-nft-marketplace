@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.2;
 
+import "hardhat/console.sol";
+
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
@@ -17,18 +19,25 @@ contract YourCollectible is
 
     Counters.Counter private _tokenIdCounter;
 
-    constructor() ERC721("YourCollectible", "YCB") {}
+    constructor() ERC721("YourCollectible", "YCB") {
+        _tokenIdCounter._value = 1;
+    }
 
     function _baseURI() internal pure override returns (string memory) {
         return "https://ipfs.io/ipfs/";
     }
 
-    function mintItem(address to, string memory uri) public returns (uint256) {
+    function mintItem(address to, string memory uri) public returns (uint256) { 
         _tokenIdCounter.increment();
+        console.log(_tokenIdCounter.current());
         uint256 tokenId = _tokenIdCounter.current();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
         return tokenId;
+    }
+
+    function getCounter() public view returns (uint256) {
+        return _tokenIdCounter.current();
     }
 
     // The following functions are overrides required by Solidity.

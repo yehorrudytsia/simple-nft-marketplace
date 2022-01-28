@@ -642,9 +642,13 @@ function App(props) {
 
   const mintItem = async () => {
     // upload to ipfs
-    const uploaded = await ipfs.add(JSON.stringify(json[count]));
-    setCount(count + 1);
+    
+    let Tx = await readContracts.YourCollectible.getCounter()
+    let nextNFT = Tx.toNumber()
+
+    const uploaded = await ipfs.add(JSON.stringify(json[nextNFT]));
     console.log("Uploaded Hash: ", uploaded);
+
     const result = tx(
       writeContracts &&
         writeContracts.YourCollectible &&
@@ -744,13 +748,14 @@ function App(props) {
                 bordered
                 dataSource={yourCollectibles}
                 renderItem={item => {
-                  const id = item.id.toNumber();
+                  let id = item.id.toNumber();
+
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
                       <Card
                         title={
                           <div>
-                            <span style={{ fontSize: 16, marginRight: 8 }}>#{id}</span> {item.name}
+                            <span style={{ fontSize: 16, marginRight: 8 }}>#{id-1}</span> {item.name}
                           </div>
                         }
                       >
